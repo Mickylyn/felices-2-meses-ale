@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#9b6b9b">
+  <title>Felices 2 meses, Ale 💜</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --lila: #c8a2c8;
+      --lila-oscuro: #9b6b9b;
+      --lila-medio: #b88bb8;
+      --lila-claro: #f3e6f5;
+      --lila-suave: #e8d4f0;
+      --girasol: #f4c430;
+      --blanco: #fffdf9;
+      --texto: #4a3550;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Quicksand', sans-serif;
+      background: #1a0f1f;
+      color: var(--texto);
+      touch-action: manipulation;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 1.8rem 1.2rem 5.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.96) translateY(18px);
+      transition: opacity 0.45s ease, transform 0.45s ease, visibility 0.45s;
+      background: linear-gradient(165deg, #f8f0fa 0%, #e8d4f0 45%, #d4b8e0 100%);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .screen.active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1) translateY(0);
+      z-index: 2;
+    }
+
+    .screen.leaving {
+      opacity: 0;
+      transform: scale(1.02) translateY(-12px);
+    }
+
+    .screen.center-content {
+      justify-content: center;
+    }
+
+    /* Splash */
+    #splash {
+      background: linear-gradient(160deg, #9b6b9b, #c8a2c8, #e8a0bf);
+      color: white;
+      text-align: center;
+      cursor: pointer;
+      justify-content: center;
+    }
+
+    #splash h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(2.8rem, 12vw, 4.5rem);
+      margin-bottom: 0.4rem;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    #splash .hint {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-top: 2rem;
+      animation: pulse 1.8s infinite;
+    }
+
+    #splash .big-emoji {
+      font-size: 4.5rem;
+      margin-bottom: 1rem;
+      animation: bounce 2.2s infinite ease-in-out;
+    }
+
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--lila), var(--lila-oscuro));
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0.4rem 1.1rem;
+      border-radius: 50px;
+      margin-bottom: 0.9rem;
+      box-shadow: 0 4px 14px rgba(155, 107, 155, 0.3);
+    }
+
+    h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(2.5rem, 9vw, 3.8rem);
+      color: var(--lila-oscuro);
+      line-height: 1.15;
+      text-align: center;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--lila-oscuro);
+      opacity: 0.9;
+      text-align: center;
+      margin-bottom: 1.1rem;
+    }
+
+    .card {
+      background: var(--blanco);
+      border-radius: 22px;
+      padding: 1.5rem 1.35rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 10px 35px rgba(155, 107, 155, 0.15);
+      border: 1px solid rgba(200, 162, 200, 0.4);
+      margin-bottom: 1rem;
+    }
+
+    .card h2 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.85rem;
+      color: var(--lila-oscuro);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .card p {
+      font-size: 0.98rem;
+      line-height: 1.7;
+      margin-bottom: 0.85rem;
+    }
+
+    .card p:last-child { margin-bottom: 0; }
+
+    .highlight {
+      color: var(--lila-oscuro);
+      font-weight: 600;
+    }
+
+    .signature {
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.65rem;
+      color: var(--lila-oscuro);
+      text-align: right;
+      margin-top: 1.1rem;
+      line-height: 1.3;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--lila-oscuro), var(--lila-medio));
+      color: white;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      padding: 0.9rem 1.8rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(155, 107, 155, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      min-height: 48px;
+      min-width: 140px;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+      box-shadow: 0 3px 12px rgba(155, 107, 155, 0.3);
+    }
+
+    .btn-girasol {
+      background: linear-gradient(135deg, #f4c430, #e6a800);
+      color: #5a4000;
+      box-shadow: 0 6px 20px rgba(230, 168, 0, 0.35);
+    }
+
+    .btn-rosa {
+      background: linear-gradient(135deg, #e8a0bf, #d4789a);
+    }
+
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 68px;
+      background: rgba(255, 253, 249, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      z-index: 100;
+      border-top: 1px solid rgba(200, 162, 200, 0.3);
+      box-shadow: 0 -4px 20px rgba(155, 107, 155, 0.1);
+    }
+
+    .nav-bar.hidden { display: none; }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      font-size: 1.55rem;
+      padding: 0.5rem 0.9rem;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: background 0.2s;
+      min-width: 48px;
+      min-height: 48px;
+    }
+
+    .nav-btn:active { background: var(--lila-claro); }
+    .nav-btn:disabled { opacity: 0.3; pointer-events: none; }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--lila-suave);
+      transition: all 0.3s;
+    }
+
+    .dot.active {
+      width: 22px;
+      border-radius: 6px;
+      background: var(--lila-oscuro);
+    }
+
+    /* Momentos */
+    .moment-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.1rem 1.2rem;
+      margin-bottom: 0.85rem;
+      border-left: 4px solid var(--lila);
+      box-shadow: 0 4px 15px rgba(155, 107, 155, 0.1);
+    }
+
+    .moment-card .emoji {
+      font-size: 1.6rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .moment-card p {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    /* Corazón interactivo */
+    .heart-btn {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #e8a0bf, #d4789a);
+      border: none;
+      font-size: 2.8rem;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(212, 120, 154, 0.4);
+      transition: transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1rem auto;
+    }
+
+    .heart-btn:active { transform: scale(0.9); }
+
+    .heart-count {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--lila-oscuro);
+      margin-top: 0.3rem;
+    }
+
+    /* ========== NUEVA DINÁMICA: SOBRES / MENSAJES SECRETOS ========== */
+    .secrets-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    .secret-card {
+      background: linear-gradient(145deg, #f3e6f5, #e8d4f0);
+      border-radius: 16px;
+      padding: 1.3rem 0.9rem;
+      text-align: center;
+      cursor: pointer;
+      border: 2px solid var(--lila-suave);
+      transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .secret-card:active {
+      transform: scale(0.96);
+    }
+
+    .secret-card .closed-emoji {
+      font-size: 2.2rem;
+      margin-bottom: 0.35rem;
+      transition: transform 0.3s;
+    }
+
+    .secret-card .closed-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--lila-oscuro);
+      opacity: 0.85;
+    }
+
+    .secret-card .secret-text {
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: var(--texto);
+      font-weight: 500;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.35s, max-height 0.35s;
+    }
+
+    .secret-card.opened {
+      background: white;
+      border-color: var(--lila);
+      box-shadow: 0 6px 18px rgba(155, 107, 155, 0.2);
+    }
+
+    .secret-card.opened .closed-emoji {
+      transform: scale(0.7);
+      margin-bottom: 0.2rem;
+    }
+
+    .secret-card.opened .closed-label {
+      display: none;
+    }
+
+    .secret-card.opened .secret-text {
+      opacity: 1;
+      max-height: 80px;
+    }
+
+    .secrets-hint {
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--lila-oscuro);
+      opacity: 0.8;
+      margin-top: 0.9rem;
+    }
+
+    /* Confetti */
+    .confetti-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 500;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      font-size: 1.4rem;
+      animation: fall 3s linear forwards;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-16px) rotate(6deg); }
+    }
+
+    .particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      font-size: 1rem;
+      opacity: 0.28;
+      animation: float 11s infinite ease-in-out;
+    }
+
+    .final-emoji {
+      font-size: 3.2rem;
+      margin: 0.9rem 0;
+      animation: bounce 2.5s infinite;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 85px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--lila-oscuro);
+      color: white;
+      padding: 0.7rem 1.4rem;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: all 0.35s;
+      z-index: 300;
+      pointer-events: none;
+      max-width: 90vw;
+      text-align: center;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-height: 680px) {
+      .screen { padding-top: 1.2rem; padding-bottom: 5.2rem; }
+      h1 { font-size: 2.3rem; }
+      .card { padding: 1.25rem 1.15rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="confetti-container" id="confetti"></div>
+  <div class="toast" id="toast"></div>
+
+  <!-- SPLASH -->
+  <div class="screen active" id="splash" onclick="startExperience()">
+    <div class="big-emoji">🐼</div>
+    <h1>Para Ale</h1>
+    <p style="font-size:1.1rem; opacity:0.95;">con mucho cariño</p>
+    <p class="hint">Toca la pantalla para empezar 💜</p>
+  </div>
+
+  <!-- 1. BIENVENIDA -->
+  <div class="screen center-content" id="screen1">
+    <div class="particles" id="particles1"></div>
+    <div class="badge">30 de septiembre</div>
+    <h1>Felices 2 meses</h1>
+    <p class="subtitle">para la persona más especial</p>
+    <div class="card" style="text-align:center;">
+      <p style="font-size:1.12rem; margin-bottom:0.6rem;">
+        Hoy celebramos <span class="highlight">dos meses</span> juntos.
+      </p>
+      <p style="font-size:1rem;">
+        Aunque estemos a kilómetros de distancia, este regalito es para ti 💜
+      </p>
+      <div style="font-size:2rem; margin-top:0.9rem;">💜 🌻 🐼</div>
+    </div>
+  </div>
+
+  <!-- 2. CARTA -->
+  <div class="screen" id="screen2">
+    <div class="card" style="border-left: 5px solid var(--lila);">
+      <h2>Para ti, Ale 💌</h2>
+      <p>
+        Hola amor, te hice esta página web porque hoy 30 de Septiembre te encuentras lejos, y bueno… qué mejor que hacerte un regalito para que puedas verlo aunque estemos a muchos kilómetros de distancia…
+      </p>
+      <p>
+        (Igual tienes tu regalito físico, pero eso te lo entregaré cuando vuelvas y nos veamos).
+      </p>
+      <p>
+        Este mes con suerte no nos vimos 2 días, fue un mes lleno de amor, alegrías, risas, unas cuantas peleas… pero a pesar de todo aquí seguimos juntos y cumpliendo 2 meses juntitos…
+      </p>
+      <p>
+        Ya te lo dije, pero me haces demasiado feliz, me gustas tal cual como eres, y estoy muy feliz de que lo nuestro siga funcionando.
+      </p>
+      <p>
+        Te amo muuuuuucho 🐄… gracias por estos dos meses que esperemos que se conviertan en muuuuchísimos más… te amo.
+      </p>
+      <p class="signature">Con mucho cariño,<br>Miky 💜</p>
+    </div>
+  </div>
+
+  <!-- 3. MENSAJES SECRETOS (nueva dinámica) -->
+  <div class="screen" id="screen3">
+    <div class="card">
+      <h2>Mensajes escondidos 💌</h2>
+      <p style="font-size:0.95rem; margin-bottom:0.6rem;">
+        Toca cada uno para descubrirlo…
+      </p>
+
+      <div class="secrets-grid">
+        <div class="secret-card" onclick="openSecret(this)">
+          <div class="closed-emoji">✉️</div>
+          <div class="closed-label">Toca aquí</div>
+          <div class="secret-text">Me haces sonreír hasta en los días grises 😊</div>
+        </div>
+
+        <div class="secret-card" onclick="openSecret(this)">
+          <div class="closed-emoji">🎁</div>
+          <div class="closed-label">Toca aquí</div>
+          <div class="secret-text">Eres mi lugar favorito, aunque estés lejos 🏡</div>
+        </div>
+
+        <div class="secret-card" onclick="openSecret(this)">
+          <div class="closed-emoji">🌙</div>
+          <div class="closed-label">Toca aquí</div>
+          <div class="secret-text">Pienso en ti más veces de las que te imaginas</div>
+        </div>
+
+        <div class="secret-card" onclick="openSecret(this)">
+          <div class="closed-emoji">🌻</div>
+          <div class="closed-label">Toca aquí</div>
+          <div class="secret-text">Contigo todo se siente más bonito 💜</div>
+        </div>
+      </div>
+
+      <p class="secrets-hint" id="secretsHint">0 de 4 descubiertos</p>
+    </div>
+  </div>
+
+  <!-- 4. COSITAS -->
+  <div class="screen" id="screen4">
+    <div class="card">
+      <h2>Cositas que me gustan de nosotros 💕</h2>
+      
+      <div class="moment-card">
+        <div class="emoji">🥰</div>
+        <p>Cómo nos reímos de casi todo… hasta de las peleas después.</p>
+      </div>
+
+      <div class="moment-card">
+        <div class="emoji">🌙</div>
+        <p>Los mensajes a cualquier hora y ese “ya llegué” que me tranquiliza.</p>
+      </div>
+
+      <div class="moment-card">
+        <div class="emoji">✈️</div>
+        <p>Los planes de viajar juntos, aunque todavía sean solo sueños.</p>
+      </div>
+
+      <div class="moment-card">
+        <div class="emoji">🐄</div>
+        <p>Que me haces demasiado feliz… tal cual como eres.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. CORAZÓN -->
+  <div class="screen center-content" id="screen5">
+    <div class="card" style="text-align:center;">
+      <h2 style="justify-content:center;">Toca el corazón 💗</h2>
+      <p style="font-size:0.98rem; margin-bottom:0.5rem;">
+        Cada toque es un “te amo” que te mando desde aquí.
+      </p>
+      
+      <button class="heart-btn" id="heartBtn" onclick="sendHeart()">💗</button>
+      <div class="heart-count" id="heartCount">0 te amos enviados</div>
+      
+      <p style="font-size:0.88rem; margin-top:1.2rem; opacity:0.8;">
+        (Puedes tocar todas las veces que quieras)
+      </p>
+    </div>
+  </div>
+
+  <!-- 6. FINAL -->
+  <div class="screen center-content" id="screen6">
+    <div class="card" style="text-align:center; background: linear-gradient(145deg, #faf5fc, #f3e6f5);">
+      <h2 style="justify-content:center;">2 meses y contando…</h2>
+      <p style="font-size:1.08rem;">
+        Que sean muchos más meses, años y aventuras.<br><br>
+        Gracias por hacer de cada día algo especial, <strong>Ale</strong>.
+      </p>
+      <div class="final-emoji">🐼💜🌻</div>
+      <button class="btn btn-girasol" onclick="launchConfetti()" style="margin-top:0.4rem;">
+        🎉 ¡Celebrar!
+      </button>
+      <button class="btn btn-rosa" onclick="showLove()" style="margin-top:0.8rem; width:100%;">
+        💖 Te amo
+      </button>
+    </div>
+  </div>
+
+  <!-- Navegación -->
+  <div class="nav-bar hidden" id="navBar">
+    <button class="nav-btn" id="prevBtn" onclick="prevScreen()">⬅️</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn" id="nextBtn" onclick="nextScreen()">➡️</button>
+  </div>
+
+  <script>
+    let current = 0;
+    const totalScreens = 6;
+    let heartClicks = 0;
+    let secretsOpened = 0;
+    const navBar = document.getElementById('navBar');
+    const toastEl = document.getElementById('toast');
+
+    const dotsContainer = document.getElementById('dots');
+    for (let i = 0; i < totalScreens; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      dotsContainer.appendChild(d);
+    }
+
+    function startExperience() {
+      document.getElementById('splash').classList.remove('active');
+      document.getElementById('splash').classList.add('leaving');
+      setTimeout(function() {
+        document.getElementById('splash').style.display = 'none';
+        showScreen(1);
+        navBar.classList.remove('hidden');
+      }, 400);
+    }
+
+    function showScreen(n) {
+      for (let i = 1; i <= totalScreens; i++) {
+        document.getElementById('screen' + i).classList.remove('active', 'leaving');
+      }
+      current = n;
+      document.getElementById('screen' + n).classList.add('active');
+
+      document.querySelectorAll('.dot').forEach(function(d, i) {
+        d.classList.toggle('active', i === n - 1);
+      });
+
+      document.getElementById('prevBtn').disabled = (n === 1);
+      document.getElementById('nextBtn').disabled = (n === totalScreens);
+
+      if (navigator.vibrate) navigator.vibrate(12);
+    }
+
+    function nextScreen() {
+      if (current < totalScreens) {
+        document.getElementById('screen' + current).classList.add('leaving');
+        setTimeout(function() { showScreen(current + 1); }, 260);
+      }
+    }
+
+    function prevScreen() {
+      if (current > 1) {
+        document.getElementById('screen' + current).classList.add('leaving');
+        setTimeout(function() { showScreen(current - 1); }, 260);
+      }
+    }
+
+    let touchStartX = 0;
+    document.addEventListener('touchstart', function(e) {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', function(e) {
+      var diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) < 55) return;
+      if (diff > 0) nextScreen();
+      else prevScreen();
+    }, { passive: true });
+
+    function showToast(text) {
+      toastEl.textContent = text;
+      toastEl.classList.add('show');
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(function() { toastEl.classList.remove('show'); }, 2200);
+    }
+
+    // Mensajes secretos
+    function openSecret(el) {
+      if (el.classList.contains('opened')) return;
+      el.classList.add('opened');
+      secretsOpened++;
+      document.getElementById('secretsHint').textContent = secretsOpened + ' de 4 descubiertos';
+      
+      if (navigator.vibrate) navigator.vibrate(25);
+
+      // Mini confetti local
+      var rect = el.getBoundingClientRect();
+      for (var i = 0; i < 5; i++) {
+        setTimeout(function() {
+          var c = document.createElement('div');
+          c.className = 'confetti';
+          c.textContent = ['💜', '✨', '💖'][Math.floor(Math.random() * 3)];
+          c.style.left = (rect.left + rect.width / 2 + (Math.random() - 0.5) * 50) + 'px';
+          c.style.top = (rect.top + 20) + 'px';
+          c.style.fontSize = (0.9 + Math.random() * 0.5) + 'rem';
+          c.style.animationDuration = (1.6 + Math.random()) + 's';
+          document.getElementById('confetti').appendChild(c);
+          setTimeout(function() { c.remove(); }, 2500);
+        }, i * 50);
+      }
+
+      if (secretsOpened === 4) {
+        showToast('¡Todos descubiertos! 💜');
+      }
+    }
+
+    function sendHeart() {
+      heartClicks++;
+      document.getElementById('heartCount').textContent = heartClicks + (heartClicks === 1 ? ' te amo enviado' : ' te amos enviados');
+      
+      for (var i = 0; i < 5; i++) {
+        setTimeout(function() {
+          var c = document.createElement('div');
+          c.className = 'confetti';
+          c.textContent = ['💗', '💜', '💖', '✨'][Math.floor(Math.random() * 4)];
+          c.style.left = (40 + Math.random() * 20) + 'vw';
+          c.style.top = '45%';
+          c.style.fontSize = (1 + Math.random() * 0.8) + 'rem';
+          c.style.animationDuration = (1.8 + Math.random()) + 's';
+          document.getElementById('confetti').appendChild(c);
+          setTimeout(function() { c.remove(); }, 2800);
+        }, i * 60);
+      }
+      
+      if (navigator.vibrate) navigator.vibrate(20);
+      
+      if (heartClicks === 5) showToast('¡Sigue tocando! 💕');
+      if (heartClicks === 15) showToast('Ya van muchos te amos 🥰');
+      if (heartClicks === 30) showToast('Eres la mejor, Ale 💜');
+    }
+
+    function launchConfetti() {
+      var emojis = ['💜', '🌻', '🐼', '✨', '💖', '🌸', '🐄', '🎉', '💗'];
+      for (var i = 0; i < 45; i++) {
+        setTimeout(function() {
+          var c = document.createElement('div');
+          c.className = 'confetti';
+          c.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          c.style.left = Math.random() * 100 + 'vw';
+          c.style.fontSize = (1.1 + Math.random() * 1.3) + 'rem';
+          c.style.animationDuration = (2.4 + Math.random() * 2) + 's';
+          document.getElementById('confetti').appendChild(c);
+          setTimeout(function() { c.remove(); }, 4500);
+        }, i * 35);
+      }
+      if (navigator.vibrate) navigator.vibrate([25, 40, 25, 40, 25]);
+      showToast('¡Felices 2 meses, Ale! 💜');
+    }
+
+    function showLove() {
+      launchConfetti();
+      showToast('Yo también te amo muchísimo 💖');
+    }
+
+    function createParticles(containerId, count) {
+      var container = document.getElementById(containerId);
+      if (!container) return;
+      var emojis = ['💜', '🌻', '✨', '🌸', '🐼'];
+      for (var i = 0; i < count; i++) {
+        var el = document.createElement('div');
+        el.className = 'particle';
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.left = Math.random() * 100 + '%';
+        el.style.top = Math.random() * 100 + '%';
+        el.style.animationDelay = (Math.random() * 6) + 's';
+        el.style.animationDuration = (9 + Math.random() * 7) + 's';
+        el.style.fontSize = (0.8 + Math.random() * 0.7) + 'rem';
+        container.appendChild(el);
+      }
+    }
+
+    createParticles('particles1', 12);
+
+    document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+  </script>
+</body>
+</html>
